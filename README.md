@@ -17,8 +17,8 @@ for (int nci = 0; nci < roop_NCI.length; nci++) {
 
 Here, I, J, R indicate the numbers of tasks, examinees, and raters. "Dist" indicates the parameter distribution used for the new test (0:Distribution1, 1:Distribution2, 2:Distribution3, 3:Distribution4). N_R is the number of raters allocated to each performance following the judge set design (give -1 to simulate a no-missing setting).
 
-The results will be shown in "/output/" directory. The files in "Dist-1" folder give the absolute error values for model parameters which are used to calculate the threshold values "delta". The files in the other folders give the absolute error values for each parameter in specific settings, which are used to calculate the average RMSEs. 
+The results will be shown in "out/current/" directory. The files in "Dist-1" folder give the absolute error values for model parameters which are used to calculate the threshold values "delta". The files in the other folders give the absolute error values for each parameter in specific settings, which are used to calculate the average RMSEs. 
 
 Run "/main/ResultSummarizer.java" to calculate the average RMSEs and the corresponding threshold value "delta" from the files. Change the values for "I", "J", "R", "N_R", "Dist" in the program to obtain an arbitrary setting. The program outputs the results to the console. 
 
-The "/out/paper_results" folder includes the raw data which were obtained from the simulation experiments in the paper. The data format is the same as in the "out" folder. If you want to obtain the summarized results based on the data, run "/main/ResultSummarizer.java" after "dir" statement changes from "out/MFRM/" to "out/paper_results". 
+The "/out/paper_results" folder includes the raw data which were obtained from the simulation experiments in the paper. The data format is the same as in the "out" folder. If you want to obtain the summarized results based on the data, run "/main/ResultSummarizer.java" after "dir" statement changes from "out/current/" to "out/paper_results". 
