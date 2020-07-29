@@ -10,7 +10,7 @@ import utility.MyUtil;
 public class ResultSummarizer {
 	final int[] roop_NCI = { 1, 2, 3, 4, 5 };
 
-	private String dir = "out/paper_results/";
+	private String dir = "out/current/";
 	private final int max_loop = 30;
 	private final boolean noisy = false;
 
