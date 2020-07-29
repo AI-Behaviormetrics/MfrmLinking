@@ -39,7 +39,7 @@ public class MyUtil {
 		}
 		return ave;
 	}
-	
+
 	public static double[][] get_averages_matrix(ArrayList<double[][]> array, int start, int thining) {
 		int l = array.get(0).length;
 		int c = array.get(0)[0].length;
@@ -65,11 +65,11 @@ public class MyUtil {
 		return ave;
 	}
 
-	public static double[] get_mae(double[] ave, double[] true_value) {
+	public static double[] get_bias(double[] ave, double[] true_value) {
 		int l = ave.length;
 		double[] mae = new double[l];
 		for (int j = 0; j < l; j++) {
-			mae[j] += Math.abs(ave[j] - true_value[j]);
+			mae[j] += (true_value[j] - ave[j]);
 		}
 		return mae;
 	}

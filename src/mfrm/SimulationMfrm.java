@@ -15,8 +15,9 @@ public class SimulationMfrm {
 	private HashMap<String, Integer> mcmcSettings;
 	private final int K = 5, Loop = 30;
 	private int I, J, R, NCI, NCR, FR, dist, jpnum;
+	private boolean noisy;
 
-	public SimulationMfrm(int I, int J, int R, int NCI, int NCR, int dist, int jpnum) {
+	public SimulationMfrm(int I, int J, int R, int NCI, int NCR, int dist, int jpnum, boolean noisy) {
 		this.I = I;
 		this.J = J;
 		this.R = R;
@@ -25,6 +26,7 @@ public class SimulationMfrm {
 		this.dist = dist;
 		this.jpnum = jpnum;
 		this.FR = NCR;// fixed rater parameters
+		this.noisy = noisy;
 
 		rand = new MTRandom();
 		mcmcSettings = new HashMap<String, Integer>();
@@ -35,8 +37,11 @@ public class SimulationMfrm {
 
 	public void run() {
 		try {
-			MyUtil.makeDir("out/current/Dist" + dist + "/I" + I + "_J" + J + "_R" + R + "/JudgePair" + jpnum);
-			PrintWriter pw = MyUtil.Writer("out/current/Dist" + dist + "/I" + I + "_J" + J + "_R" + R + "/JudgePair"
+			String dir = "out/current";
+			if(noisy) dir += "/noisy";
+			else dir += "/normal";
+			MyUtil.makeDir(dir+"/Dist" + dist + "/I" + I + "_J" + J + "_R" + R + "/JudgePair" + jpnum);
+			PrintWriter pw = MyUtil.Writer(dir+"/Dist" + dist + "/I" + I + "_J" + J + "_R" + R + "/JudgePair"
 					+ jpnum + "/NCI" + NCI + "_NCR" + NCR + ".csv");
 			for (int loop = 0; loop < Loop; loop++) {
 				// generate the base test
@@ -50,10 +55,22 @@ public class SimulationMfrm {
 				trueModel.setRandomParameters();
 
 				// set the parameters values for common raters and tasks
-				for (int i = 0; i < NCI; i++)
+				for (int i = 0; i < NCI; i++) {
 					trueModel.beta_i[i] = baseModel.beta_i[i];
-				for (int r = 0; r < NCR; r++)
+					if(noisy) {
+						if(i%2 == 0) {
+							trueModel.beta_i[i] += rand.nextGaussian() * 0.05;
+						}
+					}
+				}
+				for (int r = 0; r < NCR; r++) {
 					trueModel.beta_r[r] = baseModel.beta_r[r];
+					if(noisy) {
+						if(r%2 == 1) {
+							trueModel.beta_r[r] += rand.nextGaussian() * 0.10;
+						}
+					}
+				}
 
 				// generate data for the new test
 				trueModel.init_data();
@@ -71,13 +88,13 @@ public class SimulationMfrm {
 				new EstimationMfrm(estModel, rand, mcmcSettings, FR, NCI);
 
 				// output the results
-				print_mae_except_fixed_params(NCI, MyUtil.get_mae(trueModel.beta_i, estModel.beta_i),
+				print_mae_except_fixed_params(NCI, MyUtil.get_bias(trueModel.beta_i, estModel.beta_i),
 						("Loop" + loop + "-beta_i"), pw);
-				print_mae_except_fixed_params(FR, MyUtil.get_mae(trueModel.beta_r, estModel.beta_r),
+				print_mae_except_fixed_params(FR, MyUtil.get_bias(trueModel.beta_r, estModel.beta_r),
 						("Loop" + loop + "-beta_r"), pw);
-				print_mae_except_fixed_params(1, MyUtil.get_mae(trueModel.rho_k, estModel.rho_k),
+				print_mae_except_fixed_params(1, MyUtil.get_bias(trueModel.rho_k, estModel.rho_k),
 						("Loop" + loop + "-d_k"), pw);
-				print_mae_except_fixed_params(0, MyUtil.get_mae(trueModel.theta, estModel.theta),
+				print_mae_except_fixed_params(0, MyUtil.get_bias(trueModel.theta, estModel.theta),
 						("Loop" + loop + "-theta"), pw);
 			}
 			pw.close();

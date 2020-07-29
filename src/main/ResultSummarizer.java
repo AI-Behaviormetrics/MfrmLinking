@@ -10,13 +10,14 @@ import utility.MyUtil;
 public class ResultSummarizer {
 	final int[] roop_NCI = { 1, 2, 3, 4, 5 };
 
-	String dir = "out/current/";
+	private String dir = "out/paper_results/";
 	private final int max_loop = 30;
+	private final boolean noisy = false;
 
 	ResultSummarizer(int I, int J, int R, int dist, int N_R) throws IOException {
 		int[] roop_NCR = { 1, 2, 3, 4, 5 };
 		if (J == 1000) {
-			roop_NCR = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };			
+			roop_NCR = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		}
 		int digit = 4;
 		String setting = "I" + I + "_J" + J + "_R" + R;
@@ -25,8 +26,11 @@ public class ResultSummarizer {
 			String line = roop_NCR[ncr] + ", ";
 			for (int nci = 0; nci < roop_NCI.length; nci++) {
 				String filename = "/JudgePair" + N_R + "/NCI" + roop_NCI[nci] + "_NCR" + roop_NCR[ncr] + ".csv";
-				double[] for_delta = calculate_mae(dir + "Dist-1/" + setting + filename);
-				double[] for_newtest = calculate_mae(dir + "Dist" + dist + "/" + setting + filename);
+				double[] for_delta = calculate_rmse(dir + "normal/Dist-1/" + setting + filename);
+				String dir2 = dir;
+				if(noisy) dir2 += "noisy";
+				else dir2 += "normal";
+				double[] for_newtest = calculate_rmse(dir2 + "/Dist" + dist + "/" + setting + filename);
 				double target = for_newtest[0];
 				double delta = for_delta[0] + 2 * for_delta[1];
 				if (target < delta) {
@@ -35,14 +39,14 @@ public class ResultSummarizer {
 					line += MyUtil.form(target, digit) + "(" + MyUtil.form(delta, digit) + ")";
 				}
 				if (nci != roop_NCI.length - 1) {
-					line += ",";					
+					line += ",";
 				}
 			}
 			System.out.println(line);
 		}
 	}
 
-	double[] calculate_mae(String filename) throws IOException {
+	double[] calculate_rmse(String filename) throws IOException {
 		double[] loop_rmse = new double[max_loop];
 		int parameter_num = 0;
 
