@@ -20,5 +20,6 @@ The results will be output to the “out/current/normal/” directory. The files
 
 Run “/main/ResultSummarizer.java” to calculate the average RMSEs and the corresponding threshold value “delta” from the files. Change the values for “I,” “J,” “R,” “N_R,” and “Dist” in the program to obtain an arbitrary setting. The program outputs the results to the console.
 
-To simulate situations where temporal changes in rater and task parameters exist, run the programs after changing a "noisy" variable to "true". The results will be output to the “out/current/noisy/” directory.  
+To simulate situations where temporal changes in rater and task parameters exist, run the programs after changing a "noisy" variable to "true". The results will be output to the “out/current/noisy/” directory. 
+
 The “/out/paper_results” folder includes the raw data obtained from the simulation experiments in the paper. The data format is the same as that in the “out/current/” folder. To obtain summarized results based on the data, run “/main/ResultSummarizer.java” after performing a “dir” command to change from the “out/current/” to the “out/paper_results” directory.
